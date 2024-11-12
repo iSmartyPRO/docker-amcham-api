@@ -1,0 +1,5 @@
+.env
+src/node_modules
+src/config/config.json
+src/output/*.docx
+.DS_Store

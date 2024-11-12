@@ -1,0 +1,19 @@
+services:
+  nodejs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: amcham-api-node20
+    container_name: ${CONTAINER_NAME}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - ./src/:/home/node/app
+      - /home/node/app/node_modules
+    command: ./node_modules/.bin/nodemon index
+networks:
+  default:
+    external: true
+    name: "docker-lan"
