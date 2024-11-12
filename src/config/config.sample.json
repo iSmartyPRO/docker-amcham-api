@@ -1,4 +1,15 @@
 {
     "APP_NAME": "AmCham API",
-    "AuthorizationKey": "Super Key here"
+    "AuthorizationKey": "Auth key here",
+    "mailServer": {
+        "service": "gmail", 
+        "auth": {
+            "user": "it@amcham.kg", 
+            "pass": "application password here"
+        }
+    },
+    "appForm": {
+        "fromName": "AmCham API System",
+        "recipients": ["Ilias.Aidar@ismarty.pro", "it@amcham.kg"]
+    }
 }
