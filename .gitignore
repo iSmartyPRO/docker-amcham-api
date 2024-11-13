@@ -3,4 +3,10 @@ src/node_modules
 src/config/config.json
 src/output/*.docx
 src/output/*.pdf
+src/output/*.svg
+src/output/*.jpg
+src/output/*.cdr
+src/output/*.ai
+src/output/*.png
+
 .DS_Store

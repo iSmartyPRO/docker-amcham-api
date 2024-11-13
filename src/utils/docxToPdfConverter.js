@@ -6,6 +6,7 @@ const path = require('path');
 const convertDocxToPdf = async (inputFilePath, outputFilePath) => {
     return new Promise((resolve, reject) => {
         const command = `libreoffice --headless --convert-to pdf --outdir "${outputFilePath}" "${inputFilePath}"`;
+        console.log(command)
         exec(command, (error, stdout, stderr) => {
             if (error) {
                 console.log("4")

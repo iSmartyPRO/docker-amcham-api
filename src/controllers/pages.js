@@ -19,16 +19,21 @@ module.exports.appForm = async (req, res) => {
 
     // Генерация docx документа
     const genDocx = await generateAppFormDocx(data);
+    console.log(genDocx)
     if (genDocx.status == "OK") {
-        const docxPath = path.join(__dirname, '..', 'output', genDocx.outputFileName);
+        const docxPath = genDocx.outputFiles.docx;
+        const logoPath = genDocx.outputFiles.logo;
         const pdfPath = path.join(__dirname, '..', 'output')
-        const pdfFile = path.join(__dirname, '..', 'output', `${genDocx.outputFileName.split(".")[0]}.pdf`);
-        // Генерация pdf документа из odcx документа
+        const pdfFile = `${genDocx.outputFiles.docx.split(".")[0]}.pdf`;
+        // Генерация pdf документа из docx документа
+        console.log({docxPath, pdfFile})
         const pdfConvert = await convertDocxToPdf(docxPath, pdfPath)
         if(pdfConvert.status == "OK"){
-            const mailSend = await emailAppForm(config.appForm.recipients, `Application Form from ${data.company}`, {company: `${data.company}`}, pdfFile)
+            const attachments = [pdfFile, docxPath]
+            logoPath ? attachments.push(logoPath) : undefined
+            const mailSend = await emailAppForm(config.appForm.recipients, `Application Form from ${data.company}`, {company: `${data.company}`}, attachments)
             if(mailSend.status == "OK") {
-                res.status(200).json({status: "OK", message: "App Form generated and email is sent", filename: pdfFile})
+                res.status(200).json({status: "OK", message: "App Form generated and email is sent", attachments: mailSend.attachmentsArr})
             } else {
                 res.status(500).json({status: "Bad", message: "Something happened during sending email", details: mailSend })
             }

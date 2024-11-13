@@ -5,8 +5,16 @@ const fs = require('fs');
 const path = require('path');
 const handlebars = require('handlebars');
 
+// Функция для генерации массива вложений
+const generateAttachments = (filePaths) => {
+    return filePaths.map(filePath => ({
+        filename: path.basename(filePath), // Имя файла
+        path: filePath, // Путь к файлу
+    }));
+};
+
 // Функция для отправки письма с использованием шаблона
-const emailAppForm = async (recipients, subject, templateData, filePath) => {
+const emailAppForm = async (recipients, subject, templateData, attachmentsArr) => {
     try {
         // Шаблон письма (HTML-шаблон)
         const emailTemplate = fs.readFileSync(path.join(__dirname, '..', 'templates', 'appFormEmail.html'), 'utf-8');
@@ -16,6 +24,9 @@ const emailAppForm = async (recipients, subject, templateData, filePath) => {
 
         // Генерация HTML содержимого письма
         const htmlToSend = compiledTemplate(templateData);
+
+        // Генерация фпйлов вложений
+        const attachments = generateAttachments(attachmentsArr); 
 
         // Создаем транспорт для отправки письма
         console.log(config.mailServer)
@@ -27,18 +38,13 @@ const emailAppForm = async (recipients, subject, templateData, filePath) => {
             to: recipients.join(', '), // Получатели (массив адресов)
             subject: subject, // Тема письма
             html: htmlToSend, // Сгенерированное HTML-содержимое
-            attachments: [
-                {
-                    filename: path.basename(filePath), // Имя файла
-                    path: filePath, // Путь к файлу
-                }
-            ]
+            attachments
         };
 
         // Отправка письма
         const info = await transporter.sendMail(mailOptions);
         console.log('Письмо отправлено:', info.response);
-        return {status: "OK", message: "Письмо отправлено", details: info.response}
+        return {status: "OK", message: "Письмо отправлено", details: info.response, attachmentsArr}
     } catch (error) {
         console.error('Ошибка при отправке письма:', error);
         return {status: "Bad", message: "Ошибка при отправке письма", details: error}
