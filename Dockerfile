@@ -5,7 +5,10 @@ RUN apk add --no-cache \
     curl \
     npm \
     build-base \
-    g++;
+    g++ \
+    libreoffice \
+    openjdk11-jre \
+    ttf-freefont;
 
 RUN mkdir -p /home/node/app
 
@@ -13,7 +16,7 @@ WORKDIR /home/node/app
 
 COPY ./src/package.json /home/node/app
 
-RUN apk --no-cache add ca-certificates wget  && \
+RUN apk --no-cache add bash ca-certificates wget  && \
     npm install \
     ;
 
